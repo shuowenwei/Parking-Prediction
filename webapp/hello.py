@@ -3,13 +3,13 @@ import json
 from datetime import datetime
 
 app = Flask(__name__)
-with open('hourly.json', 'rb') as f:
-    data = f.readlines()
+with open('daily.json', 'rb') as f:
+	data = f.readlines()
 
 data = json.loads(data[0])
 lst = []
 for key, value in data.items():
-    lst.append([key, sum(value)])
+	lst.append([key.replace("-", ","), value])
 
 @app.route('/_add_numbers')
 def add_numbers():
