@@ -1,35 +1,71 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
+{% set active_page = "index" %}
 {% block body %}
 <script type="text/javascript">
-  $(function() {
-    var submit_form = function(e) {
-      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-        a: $('input[name="a"]').val(),
-        b: $('input[name="b"]').val()
-      }, function(data) {
-        $('#result').text(data.result);
-        $('input[name=a]').focus().select();
-      });
-      return false;
-    };
-
-    $('a#calculate').bind('click', submit_form);
-
-    $('input[type=text]').bind('keydown', function(e) {
-      if (e.keyCode == 13) {
-        submit_form(e);
-      }
+$(function() {
+  var submit_form = function(e) {
+    $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+      a: $('input[name="a"]').val(),
+      b: $('input[name="b"]').val()
+    }, function(data) {
+      $('#result').text(data.result);
+      $('input[name=a]').focus().select();
     });
+    return false;
+  };
 
-    $('input[name=a]').focus();
+  $('a#calculate').bind('click', submit_form);
+
+  $('input[type=text]').bind('keydown', function(e) {
+    if (e.keyCode == 13) {
+      submit_form(e);
+    }
   });
+
+  $('input[name=a]').focus();
+});
 </script>
 <h1>jQuery Example</h1>
 <p>
   <input type="text" size="5" name="a"> +
   <input type="text" size="5" name="b"> =
   <span id="result">?</span>
-<p><a href=# id="calculate">calculate server side</a>
+<p>
+<a href=# id="calculate">calculate server side</a>
 
-<div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
+<div class="jumbotron">
+  <h1>Parking Prediction </h1>
+  <h2>By <a href="https://www.smarking.net/">Smarking Inc.</a></h3>
+  <br>
+  <div id="project">
+    <p>The given data set (transations.csv) consists of more than three years of parking transaction data (from Jan 1, 2013 to Jan 31, 2016). There are two columns: entry time and exit time. Each row represents one transaction. Times are represented in ISO format.</p>
+    <p>Data Set: <a href="https://www.dropbox.com/sh/szoi9cpe7pk7o9f/AAAc9rP7VWr3I8TvoeNb6sbya?dl=0">https://www.dropbox.com/sh/szoi9cpe7pk7o9f/AAAc9rP7VWr3I8TvoeNb6sbya?dl=0</a></p>
+    <p>For example:</p>
+<pre><code class="lang-no-highlight">
+  entry time, exit time
+  2015-01-01 01:32:25, 2015-01-01 03:02:52
+  2015-01-01 01:58:11, 2015-01-01 06:39:03
+  ...
+</code></pre>
+    <p>We would like to provide one-month occupancy (number of cars in the garage) prediction to our clients. To be more specific, we would like to provide estimated occupancy for each of the following hours:</p>
+<pre><code class="lang-no-highlight">
+  [2016-02-01 00:00:00, 2016-02-01 01:00:00, ..., 2016-02-29 23:00:00]
+</code></pre>
+    <p>Requirements:</p>
+    <ol>
+      <li><p>Provide hourly predicted occupancy numbers for all the hours above in a csv file.</p></li>
+      <li><p>Provide an interactive prediction chart on a web page. It should at least allow users to hover and see the number of each data point.</p></li>
+      <li><p>Provide an interface to allow users to upload csv files with actual occupancy numbers. Visualize the actual numbers with the predicted numbers in the same chart after the upload completes. The csv file is in the following format:</p>
+<pre><code class="lang-no-highlight"> 
+ hour, occupancy
+ 2016-02-01 00:00:00, 100
+ 2016-02-01 01:00:00, 125
+ ...
+</code></pre>
+     </li>
+     <li><p>If actual occupancy numbers are provided, calculate the accuracy of your prediction and show the number on the web page. The measurement could be of your choice. Explain why you make that choice.</p>
+     </li>
+   </ol>
+ </div>
+</div>
 {% endblock %}
