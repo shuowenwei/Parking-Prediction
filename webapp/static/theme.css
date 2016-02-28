@@ -1,0 +1,39 @@
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+#calendar_chart.jumbotron {
+  position: relative;
+  width: 1000px;
+  height: 1000px;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.navbar-brand img#logo {
+  height: 50px;
+  width: auto;
+  float: left;
+}
+
+.navbar-brand {
+  height: 50px;
+  padding: 0 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
