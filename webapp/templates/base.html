@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://www.smarking.net/img/logo-s.png">
+
+    <title>Parking Prediction</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='theme.css')}}" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
+
+</head>
+
+<body role="document">
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><img id="logo" alt="Brand" src="https://www.smarking.net/img/logo-s.png"></img></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                {% set navigation_bar = [
+                ('/', 'index', 'About'),
+                ('/calendar', 'calendar', 'Calendar'),
+                ('/heatmap', 'heatmap', 'Heatmap'),
+                ('/prediction', 'prediction', 'Prediction')
+                ] -%}
+                {% set active_page = active_page|default('index') -%}
+                <ul class="nav navbar-nav">
+                    {% for href, id, caption in navigation_bar %}
+                    <li{% if id == active_page %} class="active"{% endif
+                    %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+<div class="container theme-showcase" role="main">
+
+
+    {% block body %}
+    {% endblock %}
+
+    <hr>
+
+    <footer>
+        <p>&copy; Made by <a href="https://www.linkedin.com/in/havefun">Fang Huang</a>.</p>
+    </footer>
+
+</div> <!-- /container -->
+
+</body>
+</html>
