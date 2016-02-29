@@ -2,8 +2,88 @@
 {% set active_page = "prediction" %}
 {% block body %}
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 <div class="jumbotron">
   <h1>My Prediction</h1>
+  <p>When I was doing train test split, I simply used Jan 2016 as testing dataset and trained on the rest of the dataset. Here is the result for Jan 2016. Click and drag to zoom in.</p>
+  <script type="text/javascript">
+  $(function () {
+    $('#jan2016').highcharts({
+      chart: {
+          type: 'line',
+          zoomType: 'x',
+          panning: true,
+          panKey: 'shift'
+      },
+      title: {
+          text: 'Hourly Occupancy Number',
+          x: -20 //center
+      },
+      subtitle: {
+          text: 'Jan 2016',
+          x: -20
+      },
+      xAxis: {
+        title: {
+            text: 'Hours'
+        },
+        // type: 'datetime',
+      },
+      yAxis: {
+          title: {
+              text: 'Number #'
+          },
+          plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+          }]
+      },
+      tooltip: {
+          shared: true,
+      crosshairs: true
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle',
+          borderWidth: 0
+      },
+      series: [ 
+        {% for key, value in jan16_data.items() %}
+        {
+          name: '{{key}}',
+          data: {{value}}
+        },
+        {% endfor %}
+      ],
+      credits: {
+        enabled: false
+      }
+    });
+});
+
+  </script>
+  <div id="jan2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  <br>
+  <p>R^2 = 0.90168339088944438</p>
+  <p>If you have the actual occupancy numbers for Feb 2016, you can upload it here.</p>
+  <div style="position:relative;">
+    
+    
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+    <a class='btn btn-primary pull' href='javascript:;'>
+      Choose File...
+      <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+    </a>
+    <button id="uploadcsv" type="submit" class="btn btn-success pull-right">Upload</button>
+    </form>
+    <span class='label label-info' id="upload-file-info"></span>
+
+  </div>
+
 </div>
 
 {% endblock %}

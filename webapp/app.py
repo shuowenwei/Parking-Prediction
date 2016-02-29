@@ -1,9 +1,14 @@
-from flask import Flask, jsonify, render_template, request
+import os
+from flask import Flask, render_template, jsonify, redirect, url_for, request
 from datetime import datetime, date, timedelta
 # import calendar
 import json
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+# ALLOWED_EXTENSIONS = ['csv']
+
 with open('daily.json', 'rb') as f:
 	data = f.readlines()
 
@@ -16,6 +21,11 @@ with open('hourly.json', 'rb') as f:
 	h_data = f.readlines()
 
 h_data = json.loads(h_data[0])
+
+with open('201601.json', 'rb') as f:
+	jan16_data = f.readlines()
+
+jan16_data = json.loads(jan16_data[0])
 
 @app.route('/_get_h_data')
 def get_h_data():
@@ -62,13 +72,28 @@ def get_d_data():
 	dict[str(end_date)] = h_data[str(end_date)]
 	return jsonify(dict=dict)
 
+@app.route('/upload', methods=['POST'])
+def upload():
+	if request.method == 'POST':
+		f = request.files['file_source']
+		print "===================================="
+		if not f:
+			return render_template('prediction.html', jan16_data=jan16_data)
+		now = datetime.now()
+		filename = os.path.join(app.config['UPLOAD_FOLDER'], "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), f.filename.rsplit('.', 1)[1]))
+		f.save(filename)
+		return redirect(url_for('linechart'))
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 @app.route('/')
 def index():
 	return render_template('index.html')
 
 @app.route('/calendar')
 def calendar():
-	return render_template('calendar.html', lst = lst)
+	return render_template('calendar.html', lst=lst)
 
 @app.route('/heatmap')
 def heatmap():
@@ -80,7 +105,7 @@ def linechart():
 
 @app.route('/prediction')
 def prediction():
-	return render_template('prediction.html')
+	return render_template('prediction.html', jan16_data=jan16_data)
 
 if __name__ == "__main__":
 	app.run(debug=True)
