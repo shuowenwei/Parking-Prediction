@@ -61,7 +61,11 @@ def calendar():
 
 @app.route('/heatmap')
 def heatmap():
-	return render_template('heatmap.html', lst = lst)
+	return render_template('heatmap.html')
+
+@app.route('/linechart')
+def linechart():
+	return render_template('linechart.html')
 
 @app.route('/prediction')
 def prediction():
