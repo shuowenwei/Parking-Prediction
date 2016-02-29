@@ -128,7 +128,13 @@
         {
           name : 'y_true',
           data : {{tmp_actual_lst|default(actual_lst)}}
-        }
+        },
+        {% for key, value in feb16_data.items() %}
+        {
+          name: '{{key}}',
+          data: {{value}}
+        },
+        {% endfor %}
       ],
       credits: {
         enabled: false
@@ -139,7 +145,7 @@
   </script>
   <div id="Jan2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
   <br>
-  <p>R^2 = 0.90168339088944438</p>
+  <p>R^2 = {{r2_jan16}}</p>
   <p>If you have the actual occupancy numbers for Feb 2016, you can upload it here.</p>
   <div style="position:relative;">
     
@@ -157,7 +163,6 @@
           {% for message in messages %}
           <div class="alert alert-warning alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-          {{message}}
           </div>
         {% endfor %}
         {% endif %}
@@ -167,6 +172,8 @@
     <p>global: {{actual_lst}}</p> -->
   </div>
  <div id="Feb2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+ <br>
+<p>R^2 = {{r2_feb16}}</p>
 </div>
 
 {% endblock %}

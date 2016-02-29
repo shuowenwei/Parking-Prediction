@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, jsonify, redirect, url_for, request, flash
 from datetime import datetime, date, timedelta
+from sklearn.metrics import r2_score, mean_squared_error
 # import calendar
 import json
 import csv
@@ -27,6 +28,13 @@ with open('201601.json', 'rb') as f:
 	jan16_data = f.readlines()
 
 jan16_data = json.loads(jan16_data[0])
+
+with open('201602.json', 'rb') as f:
+	feb16_data = f.readlines()
+
+feb16_data = json.loads(feb16_data[0])
+
+r2_jan16 = r2_score(jan16_data['y_true'], jan16_data['y_pred'])
 
 @app.route('/_get_h_data')
 def get_h_data():
@@ -74,13 +82,16 @@ def get_d_data():
 	return jsonify(dict=dict)
 
 actual_lst = []
+r2_feb16 = 0
+if len(actual_lst) == len(feb16_data['y_pred']):
+	r2_feb16 = r2_score(actual_lst, feb16_data['y_pred'])
 @app.route('/upload', methods=['POST'])
 def upload():
 	if request.method == 'POST':
 		f = request.files['file_source']
 		print "===================================="
 		if not f:
-			return render_template('prediction.html', jan16_data=jan16_data, actual_lst=actual_lst)
+			return redirect(url_for('prediction'))
 		now = datetime.now()
 		filename = os.path.join(app.config['UPLOAD_FOLDER'], "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), f.filename.rsplit('.', 1)[1]))
 		f.save(filename)
@@ -91,7 +102,10 @@ def upload():
 				tmp_actual_lst += [int(i['occupancy'])]
 		global actual_lst
 		actual_lst = tmp_actual_lst
-		return render_template('prediction.html', jan16_data=jan16_data, tmp_actual_lst=tmp_actual_lst, actual_lst=actual_lst)
+		return render_template('prediction.html', 
+			jan16_data=jan16_data, feb16_data=feb16_data,
+			tmp_actual_lst=tmp_actual_lst, actual_lst=actual_lst, 
+			r2_jan16=r2_jan16, r2_feb16=r2_feb16)
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -114,7 +128,9 @@ def linechart():
 
 @app.route('/prediction')
 def prediction():
-	return render_template('prediction.html', jan16_data=jan16_data, actual_lst=actual_lst)
+	return render_template('prediction.html',
+		jan16_data=jan16_data, feb16_data=feb16_data, actual_lst=actual_lst,
+		r2_jan16=r2_jan16, r2_feb16=r2_feb16)
 
 if __name__ == "__main__":
 	# app.secret_key = 'super secret key'
