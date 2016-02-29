@@ -20,13 +20,7 @@ body {
 #calendar_chart.jumbotron, #heatmap_chart.jumbotron {
   position: relative;
   width: 1000px;
-  height: 1000px;
-  background-size: cover;
-  overflow: hidden;
-}{
-  position: relative;
-  width: 1000px;
-  height: 1000px;
+  height: 1100px;
   background-size: cover;
   overflow: hidden;
 }

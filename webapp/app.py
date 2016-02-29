@@ -17,8 +17,8 @@ with open('hourly.json', 'rb') as f:
 
 h_data = json.loads(h_data[0])
 
-@app.route('/_get_data')
-def get_data():
+@app.route('/_get_h_data')
+def get_h_data():
 	"""Add two numbers server side, ridiculous but well..."""
 	year_month = request.args.get('a', type=str)
 	year_month = year_month.split('-')
@@ -50,6 +50,17 @@ def get_data():
 		ttt += map(lambda x, y: x + [y], tt[k], h_data[m_lst[k]])
 	return jsonify(day_lst=m_lst, data_lst=ttt, y=y)
 
+@app.route('/_get_d_data')
+def get_d_data():
+	"""Add two numbers server side, ridiculous but well..."""
+	start_date = datetime.strptime((request.args.get('a', type=str)), '%Y-%m-%d').date()
+	end_date = datetime.strptime((request.args.get('b', type=str)), '%Y-%m-%d').date()
+	dict = {}
+	while start_date < end_date:
+		dict[str(start_date)] = h_data[str(start_date)]
+		start_date += timedelta(days=1)
+	dict[str(end_date)] = h_data[str(end_date)]
+	return jsonify(dict=dict)
 
 @app.route('/')
 def index():
