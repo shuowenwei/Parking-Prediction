@@ -10,7 +10,7 @@
   <p>When I was doing train test split, I simply used Jan 2016 as testing dataset and trained on the rest of the dataset. Here is the result for Jan 2016. Click and drag to zoom in.</p>
   <script type="text/javascript">
   $(function () {
-    $('#jan2016').highcharts({
+    $('#Jan2016').highcharts({
       chart: {
           type: 'line',
           zoomType: 'x',
@@ -29,7 +29,10 @@
         title: {
             text: 'Hours'
         },
-        // type: 'datetime',
+        type: 'datetime',
+        labels: {
+            overflow: 'justify'
+        }
       },
       yAxis: {
           title: {
@@ -51,6 +54,12 @@
           verticalAlign: 'middle',
           borderWidth: 0
       },
+      plotOptions: {
+          line: {
+              pointInterval: 3600000, // one hour
+              pointStart: Date.UTC(2016, 0, 1, 0, 0, 0)
+          }
+      },
       series: [ 
         {% for key, value in jan16_data.items() %}
         {
@@ -64,9 +73,71 @@
       }
     });
 });
-
+  $(function () {
+    $('#Feb2016').highcharts({
+      chart: {
+          type: 'line',
+          zoomType: 'x',
+          panning: true,
+          panKey: 'shift'
+      },
+      title: {
+          text: 'Hourly Occupancy Number',
+          x: -20 //center
+      },
+      subtitle: {
+          text: 'Feb 2016',
+          x: -20
+      },
+      xAxis: {
+        title: {
+            text: 'Hours'
+        },
+        type: 'datetime',
+        labels: {
+            overflow: 'justify'
+        }
+      },
+      yAxis: {
+          title: {
+              text: 'Number #'
+          },
+          plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+          }]
+      },
+      tooltip: {
+          shared: true,
+      crosshairs: true
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle',
+          borderWidth: 0
+      },
+      plotOptions: {
+          line: {
+              pointInterval: 3600000, // one hour
+              pointStart: Date.UTC(2016, 1, 1, 0, 0, 0)
+          }
+      },
+      series: [ 
+        {
+          name : 'y_true',
+          data : {{tmp_actual_lst|default(actual_lst)}}
+        }
+      ],
+      credits: {
+        enabled: false
+      }
+    });
+});
+ 
   </script>
-  <div id="jan2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  <div id="Jan2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
   <br>
   <p>R^2 = 0.90168339088944438</p>
   <p>If you have the actual occupancy numbers for Feb 2016, you can upload it here.</p>
@@ -81,9 +152,21 @@
     <button id="uploadcsv" type="submit" class="btn btn-success pull-right">Upload</button>
     </form>
     <span class='label label-info' id="upload-file-info"></span>
-
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-warning alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          {{message}}
+          </div>
+        {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <br>
+<!--     <p>tmp: {{tmp_actual_lst}}</p>
+    <p>global: {{actual_lst}}</p> -->
   </div>
-
+ <div id="Feb2016" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </div>
 
 {% endblock %}

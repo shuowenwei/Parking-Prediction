@@ -1,8 +1,9 @@
 import os
-from flask import Flask, render_template, jsonify, redirect, url_for, request
+from flask import Flask, render_template, jsonify, redirect, url_for, request, flash
 from datetime import datetime, date, timedelta
 # import calendar
 import json
+import csv
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -72,17 +73,25 @@ def get_d_data():
 	dict[str(end_date)] = h_data[str(end_date)]
 	return jsonify(dict=dict)
 
+actual_lst = []
 @app.route('/upload', methods=['POST'])
 def upload():
 	if request.method == 'POST':
 		f = request.files['file_source']
 		print "===================================="
 		if not f:
-			return render_template('prediction.html', jan16_data=jan16_data)
+			return render_template('prediction.html', jan16_data=jan16_data, actual_lst=actual_lst)
 		now = datetime.now()
 		filename = os.path.join(app.config['UPLOAD_FOLDER'], "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), f.filename.rsplit('.', 1)[1]))
 		f.save(filename)
-		return redirect(url_for('linechart'))
+		tmp_actual_lst = []
+		with open(filename, 'rb') as csvfile:
+			csvreader = csv.DictReader(csvfile)
+			for i in csvreader:
+				tmp_actual_lst += [int(i['occupancy'])]
+		global actual_lst
+		actual_lst = tmp_actual_lst
+		return render_template('prediction.html', jan16_data=jan16_data, tmp_actual_lst=tmp_actual_lst, actual_lst=actual_lst)
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -105,7 +114,9 @@ def linechart():
 
 @app.route('/prediction')
 def prediction():
-	return render_template('prediction.html', jan16_data=jan16_data)
+	return render_template('prediction.html', jan16_data=jan16_data, actual_lst=actual_lst)
 
 if __name__ == "__main__":
+	# app.secret_key = 'super secret key'
+	# app.config['SESSION_TYPE'] = 'filesystem'
 	app.run(debug=True)
