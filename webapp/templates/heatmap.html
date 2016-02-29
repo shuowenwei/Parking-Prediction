@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% set active_page = "heatmap" %}
+{% block body %}
+
+<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript" src="http://code.highcharts.com/modules/heatmap.js"></script>
+<script type="text/javascript" src="http://code.highcharts.com/modules/drilldown.js"></script>
+<script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+<div id="heatmap_chart", class="jumbotron">
+	<h1>Monthly Heatmap</h1>
+	<p>This is a heatmap showing the hourly occupancy number monthly. The data is currently only available for full year 2013, 2014, 2015 and 01/2016.</p>
+
+	<div class="container">
+		<div class="col-sm-6" style="height:130px;">
+			<div class="form-group">
+				<div class='input-group date' id='datetimepicker10'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar">
+						</span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<input type="button" class="btn btn-success" id="getDate" value="Get Date" />
+	</div>
+<script type="text/javascript">
+$(function () {
+	$('#datetimepicker10').datetimepicker({
+		defaultDate: "1/1/2016",
+		viewMode: 'years',
+		format: 'YYYY-MM'
+	});
+});
+$('#getDate').click(function () {
+	var month = $('#datetimepicker10').data('date')
+	console.log(month);
+	var start_month = "2012-12"
+	var end_month = "2016-02"
+	if (month > start_month & month < end_month) {
+		console.log("i will send "+ month);
+		$.getJSON('/_get_h_data', {
+			a: month
+		}, function(data) {
+			$('#heatmap').highcharts({
+
+				chart: {
+					type: 'heatmap',
+					marginTop: 40,
+					marginBottom: 60,
+					plotBorderWidth: 1,
+					height: 650
+				},
+
+
+				title: {
+					text: 'Hourly occupancy number in ' + month
+				},
+
+				xAxis: {
+					type: 'datetime',
+					categories: data.day_lst,
+					title: 'Day'
+				},
+
+				yAxis: {
+					categories: data.y,
+					title: 'Hour'
+				},
+
+				colorAxis: {
+					min: 0,
+					minColor: '#FFFFFF',
+					maxColor: Highcharts.getOptions().colors[0]
+				},
+
+				legend: {
+					align: 'right',
+					layout: 'vertical',
+					margin: 0,
+					verticalAlign: 'top',
+					y: 25,
+					symbolHeight: 500
+				},
+
+				tooltip: {
+					formatter: function () {
+						return '<b>' + this.series.xAxis.categories[this.point.x] + '</b><br> # of occupancy <b>' +
+						this.point.value + '</b><br> At <b>' + this.series.yAxis.categories[this.point.y] + "</b> O' Clock";
+					}
+				},
+
+				series: [{
+					name: 'hourly occupancy #',
+					borderWidth: 0,
+					data: data.data_lst,
+					dataLabels: {
+						enabled: true,
+						color: '#000000',
+						style: { fontSize: '10px' }
+					}
+				}],
+
+				credits: {
+					enabled: false
+				}
+
+			});
+
+		});
+	} else {
+		alert("The data is currently only available for full year 2013, 2014, 2015 and 01/2016.");
+	}
+});
+</script>
+<div id="heatmap" style="height: 400px; min-width: 310px; max-width: 800px; margin: 0 auto"></div>
+</div>
+
+{% endblock %}
