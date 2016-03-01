@@ -132,6 +132,10 @@ def prediction():
 		jan16_data=jan16_data, feb16_data=feb16_data, actual_lst=actual_lst,
 		r2_jan16=r2_jan16, r2_feb16=r2_feb16)
 
+@app.route('/contact')
+def contact():
+	return render_template('contact.html')
+
 if __name__ == "__main__":
 	# app.secret_key = 'super secret key'
 	# app.config['SESSION_TYPE'] = 'filesystem'
