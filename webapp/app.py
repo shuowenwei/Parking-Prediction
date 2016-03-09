@@ -83,8 +83,6 @@ def get_d_data():
 
 actual_lst = []
 r2_feb16 = 0
-if len(actual_lst) == len(feb16_data['y_pred']):
-	r2_feb16 = r2_score(actual_lst, feb16_data['y_pred'])
 @app.route('/upload', methods=['POST'])
 def upload():
 	if request.method == 'POST':
@@ -102,6 +100,10 @@ def upload():
 				tmp_actual_lst += [int(i['occupancy'])]
 		global actual_lst
 		actual_lst = tmp_actual_lst
+		if len(actual_lst) == len(feb16_data['y_pred']):
+			global r2_feb16 
+			r2_feb16 = r2_score(actual_lst, feb16_data['y_pred'])
+		print r2_feb16
 		return render_template('prediction.html', 
 			jan16_data=jan16_data, feb16_data=feb16_data,
 			tmp_actual_lst=tmp_actual_lst, actual_lst=actual_lst, 
